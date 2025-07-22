@@ -1,51 +1,403 @@
+
+
 <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Easy Trans</title>
+    <style>
+      /* All your styles are preserved exactly as in your working version */
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        overflow-x: hidden;
+      }
+      .taskbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #003366;
+        padding: 10px 20px;
+      }
+      .menu-icon {
+        font-size: 24px;
+        color: white;
+        cursor: pointer;
+      }
+      .search-bar {
+        margin-left: auto;
+        max-width: 300px;
+        position: relative;
+      }
+      .search-bar input {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: none;
+        font-size: 16px;
+      }
+      .search-results {
+        position: absolute;
+        top: 40px;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #ccc;
+        z-index: 10;
+        color: black;
+      }
+      .search-results div {
+        padding: 10px;
+        cursor: pointer;
+      }
+      .search-results div:hover {
+        background-color: #f0f0f0;
+      }
+      header img {
+        width: 100%;
+        height: auto;
+        display: block;
+        pointer-events: none;
+        user-select: none;
+      }
+      h2 {
+        text-align: left;
+        padding-left: 20px;
+        margin-top: 40px;
+        color: #003366;
+        position: relative;
+      }
+      h2::after {
+        content: "";
+        display: block;
+        width: 100px;
+        height: 2px;
+        background-color: black;
+        margin-top: 5px;
+      }
+      section {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 20px;
+        flex-wrap: wrap;
+      }
+      .text {
+        flex: 3;
+        padding-right: 20px;
+        min-width: 300px;
+      }
+      .image {
+        flex: 2;
+        text-align: right;
+        min-width: 250px;
+      }
+      .image img {
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+        pointer-events: none;
+        user-select: none;
+      }
+      .side-by-side {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .side-by-side img {
+        width: 48%;
+        height: auto;
+        pointer-events: none;
+        user-select: none;
+      }
+      .experience-card {
+        background-color: #f9f9f9;
+        padding: 30px;
+        margin: 20px;
+      }
+      .address-section {
+        padding: 20px;
+      }
+      .address-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+      .address-buttons button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .address-display {
+        display: none;
+        white-space: pre-wrap;
+        margin-top: 10px;
+      }
+      .divider {
+        height: 2px;
+        background-color: black;
+        margin: 40px 0 0 0;
+        width: 100%;
+      }
+      .contact-card {
+        background-color: black;
+        color: white;
+        padding: 30px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .contact-card h2 {
+        text-align: center;
+        margin-top: 0;
+        color: white;
+      }
+      .contact-card h2::after {
+        content: "";
+        display: block;
+        width: 100px;
+        height: 2px;
+        background-color: white;
+        margin: 5px auto 20px;
+      }
+      .contact-info {
+        text-align: center;
+        font-size: 18px;
+        line-height: 1.8;
+      }
+      .contact-info a {
+        color: white;
+        text-decoration: none;
+      }
+      @media (max-width: 768px) {
+        .side-by-side img,
+        .image {
+          width: 100%;
+        }
+        .contact-card {
+          padding: 20px;
+        }
+        .know-more-panel {
+          width: 100%;
+        }
+      }
+      .know-more-panel {
+        background-color: #003366;
+        color: white;
+        width: 25%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        transition: width 0.3s ease;
+        overflow: hidden;
+        z-index: 999;
+        display: none;
+      }
+      .know-more-panel.full-width {
+        width: 100%;
+      }
+      .know-more-card {
+        background-color: #f0f0f0;
+        color: black;
+        margin: 20px;
+        padding: 20px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Taskbar -->
+    <div class="taskbar">
+      <div class="menu-icon" onclick="toggleKnowMore()">☰</div>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search..." onclick="showSearchOptions()" />
+        <div class="search-results" id="searchResults"></div>
+      </div>
+    </div>
 
-<html>
+    <!-- Know More Panel -->
+    <div id="knowMorePanel" class="know-more-panel">
+      <button onclick="expandKnowMore()" style="margin: 10px; background: white; color: #003366; padding: 6px 10px; border-radius: 5px; border: none;">Know More</button>
+      <div id="knowMoreContent" style="display: none;">
+        <div class="know-more-card">
+          <h3>Easy Trans: Powering India's Container Logistics Network</h3>
+          <p>In today’s fast-paced and interconnected economy, the movement of goods plays a vital role in shaping business success, customer satisfaction, and national growth. One of the key players in this domain is Easy Trans, a logistics company specializing in the transport of containers across India. With a mission to simplify and streamline logistics operations, Easy Trans serves as a bridge between manufacturers, suppliers, and end-users, ensuring timely and secure delivery of goods across the vast Indian landscape.</p>
+        </div>
+      </div>
+    </div>
 
-<head>
- <meta name="viewport" content="width=device-width, initial-scale=1">
- <title>easytrans</title>
- 
- <body>
-  <img src="/storage/emulated/0/Pictures/Untitled8_20250519124147 (1) (1).jpg" width="100%" height="5%">
-  
-  <hr size="3px"  color="lightblue">
-   <hr size="5px" color="lightblue">
-<blockquote> <samp style="color:darkgreen"><h2><b>WHY CHOOSE US?</b></h2>
- </samp>
- 
-<p><h3><samp style="color:gray">With a decade-long presence in the industry, Easy Trans has developed expertise in both local and interstate transportation, specializing in Over-Dimensional Cargo (ODC) 
-transportation.The team’s dedication to reliability and efficiency makes partnering with Easy Trans a dependable choice for all transportation needs..</samp></h3></p></blockquote>
-  
-  <blockquote><i> <samp style="color:red"><h2>Easy Trans has consistently demonstrated its capability to handle complex logistics with precision and care</h2></i></samp></blackquote
- >
-   <img src="/storage/emulated/0/Pictures/Untitled8_20250518190454 (1).jpg" width="100%" height="5%">
-  
-  <blockquote><samp style="color:darkgreen"><h2><b>OVERVEIW</b></h2></samp>
-  <p><h3><samp style="color:gray">Easy Trans is a transportation company based in Bangalore, with a decade of experience 
-specializing in local transportation of loose cargo and container movement. Over the past 10 
-years, Easy Trans has built a reliable service network that ensures efficient and timely delivery 
-of cargo both within Bangalore and across other parts of the country. Company has been 
-engaged in the port movements to major ports for two years. Easy Trans’ team is specialized 
-of handling temperature sensitive cargos (Reefer containers). Assurance of quality and timely 
-service is empowered.</samp></h3></p></blockquote>
-  
-  <img src="/storage/emulated/0/Pictures/Untitled8_20250518212319 (1) (1).jpg" width="100%" height="300">
-  
-  <blockquote><h2><samp style="color:darkgreen">OUR OFFICES</samp></h2>
-  
-  <samp style="color:green"><h3>Banglore:</h3></samp> 
-  <samp style="color:gray"><h3>#13-14,1st floor DLSV Complex,
-   <br>Navodaya Nagar,Kothannur Main Road,
-   <br>J.P Nagar 7th phase Bangalore-560078</h3></samp>
-  </blackquote>
-  <hr>
-   
-  <h2><center>Contact us</h2></center>
-  <center> <h3>Email: easytransline@gmail.com
-    <br>Phone: +91 9738828826 / +91 8590582670
-    <br>
-   </h3></center>
-  <hr>
-   
+    <!-- Header -->
+    <header>
+      <img src="https://i.postimg.cc/1zHwcNvk/Untitled8-20250519124147-1-1.jpg" alt="Easy Trans Banner" />
+    </header>
+
+    <!-- Why Choose Us -->
+    <section>
+      <div class="text">
+        <h2>Why Choose Us</h2>
+        <p>Easy Trans is your reliable partner for seamless logistics and transportation across India. Our services are built on a commitment to safety, speed, and efficiency. At Easy Trans, we prioritize customer satisfaction, timely deliveries, and secure handling of every shipment. Our team is trained to manage complex logistics efficiently, making us a trusted partner for container transport across India.</p>
+      </div>
+      <div class="image">
+        <img src="https://i.postimg.cc/zvYGgj9w/IMG-20250719-WA0006.jpg" alt="Logistics Icon" style="margin-top: 80px; margin-right: 20px;" />
+      </div>
+    </section>
+
+    <!-- Overview -->
+    <section id="overview">
+      <div class="text">
+        <h2>Overview</h2>
+        <p>Easy Trans is a transportation company based in Bangalore, with a decade of experience specializing in local transportation of loose cargo and container movement. Over the past 10 years, Easy Trans has built a reliable service network that ensures efficient and timely delivery of cargo both within Bangalore and across other parts of the country.</p>
+        <p>Company has been engaged in the port movements to major ports for two years. Easy Trans’ team is specialized of handling temperature sensitive cargos (Reefer containers). Assurance of quality and timely service is empowered.</p>
+      </div>
+      <div class="image">
+        <img src="https://i.postimg.cc/mr17zNkV/Untitled12-20250718201620.jpg" alt="Overview Truck" style="width: 95%;" />
+      </div>
+    </section>
+
+    <!-- Side Images -->
+    <div class="side-by-side">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgetG-_7VFQWv0WSdNkQGmBreB6MA0hI5ktg&usqp=CAU" alt="Delivery 1" />
+      <img src="https://www.dispatchtrack.com/hubfs/delivery%20logistics.webp" alt="Delivery 2" />
+    </div>
+
+    <!-- Experience -->
+    <div class="experience-card" id="experience">
+      <h2>Experience</h2>
+      <p>With a decade-long presence in the industry, Easy Trans has developed expertise in both local and interstate transportation. Specializing in Over-Dimensional Cargo (ODC) transportation, Easy Trans has consistently demonstrated its capability to handle complex logistics with precision and care. The team’s dedication to reliability and efficiency makes partnering with Easy Trans a dependable choice for all transportation needs.</p>
+    </div>
+
+    <!-- Additional Info -->
+    <section style="margin-left: 100px; display: flex; align-items: flex-start;">
+      <div class="image" style="flex: 2; min-width: 250px; text-align: left;">
+        <img src="https://i.postimg.cc/8C351D40/IMG-20250719-WA0009.jpg" alt="Additional Info Truck" style="margin-left: -60px;" />
+      </div>
+      <div class="text" style="flex: 3; padding-right: 20px; min-width: 300px;">
+        <h2>Additional Info</h2>
+        <p>Technical Skills:<br>
+          • Logistics Management<br>
+          • Fleet Management<br>
+          • Route Optimization with GPS and Telematics<br>
+          • Supply Chain Management<br>
+          • Safety and Compliance
+        </p>
+      </div>
+    </section>
+
+    <!-- ✅ Address Section with Mumbai Address -->
+    <div class="address-section" id="address">
+      <h2>Address</h2>
+      <div class="address-buttons">
+        <button onclick="toggleAddress('bangalore')">Bangalore</button>
+        <button onclick="toggleAddress('mumbai')">Mumbai</button>
+      </div>
+      <div id="bangalore-address" class="address-display">
+        <strong>Bangalore</strong><br />
+        NO 13/14, 1ST FLOOR, SV COMPLEX, KOTHNUR MAIN ROAD, JP NAGAR 7TH PHASE,<br />
+        Bengaluru, Bengaluru Urban, Karnataka, 560078.
+      </div>
+      <div id="mumbai-address" class="address-display">
+        <strong>Mumbai</strong><br />
+        NO- 73, VNDHYA COMPLEX, PL NO - 1,<br />
+        SECTOR 11, CBD BELAPUR, THANE 400614, MAHARASHTRA.
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="divider"></div>
+
+    <!-- Contact -->
+    <div class="contact-card" id="contact">
+      <h2>Contact Us</h2>
+      <div class="contact-info">
+        <p><strong>Email:</strong> <a href="mailto:easytansline@gmail.com">easytansline@gmail.com</a></p>
+        <p><strong>Phone:</strong> <a href="tel:+919738828826">+91 97388 28826</a> / <a href="tel:+918590582670">+91 85905 82670</a></p>
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script>
+      let knowMoreOpen = false;
+      const knowPanel = document.getElementById("knowMorePanel");
+      const knowContent = document.getElementById("knowMoreContent");
+
+      function toggleKnowMore() {
+        knowPanel.style.display = knowPanel.style.display === "block" ? "none" : "block";
+        knowPanel.classList.remove("full-width");
+        knowContent.style.display = "none";
+        knowMoreOpen = false;
+      }
+
+      function expandKnowMore() {
+        knowMoreOpen = !knowMoreOpen;
+        knowPanel.classList.toggle("full-width", knowMoreOpen);
+        knowContent.style.display = knowMoreOpen ? "block" : "none";
+      }
+
+      window.addEventListener("click", function (e) {
+        if (knowMoreOpen && !knowPanel.contains(e.target) && e.target.innerText !== "☰") {
+          knowPanel.classList.remove("full-width");
+          knowContent.style.display = "none";
+          knowMoreOpen = false;
+        }
+      });
+
+      const searchInput = document.getElementById("searchInput");
+      const searchResults = document.getElementById("searchResults");
+
+      const sections = [
+        { keyword: "overview", id: "overview" },
+        { keyword: "experience", id: "experience" },
+        { keyword: "contact", id: "contact" },
+        { keyword: "address", id: "address" },
+        { keyword: "know more", id: "knowMorePanel" }
+      ];
+
+      const contactWords = ["email", "phone", "whatsapp", "contact"];
+
+      searchInput.addEventListener("input", () => {
+        const value = searchInput.value.toLowerCase().trim();
+        searchResults.innerHTML = "";
+
+        if (value === "") {
+          sections.forEach(section => {
+            const div = document.createElement("div");
+            div.textContent = section.keyword.charAt(0).toUpperCase() + section.keyword.slice(1);
+            div.onclick = () => scrollToSection(section.id);
+            searchResults.appendChild(div);
+          });
+          return;
+        }
+
+        const isContact = contactWords.some(word => value.includes(word));
+        const matches = isContact
+          ? [sections.find(s => s.keyword === "contact")]
+          : sections.filter(s => s.keyword.includes(value));
+
+        matches.forEach(section => {
+          if (section) {
+            const div = document.createElement("div");
+            div.textContent = section.keyword.charAt(0).toUpperCase() + section.keyword.slice(1);
+            div.onclick = () => scrollToSection(section.id);
+            searchResults.appendChild(div);
+          }
+        });
+      });
+
+      function scrollToSection(id) {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+        searchResults.innerHTML = "";
+      }
+
+      function toggleAddress(city) {
+        const bangalore = document.getElementById("bangalore-address");
+        const mumbai = document.getElementById("mumbai-address");
+
+        bangalore.style.display = city === "bangalore" ? (bangalore.style.display === "block" ? "none" : "block") : "none";
+        mumbai.style.display = city === "mumbai" ? (mumbai.style.display === "block" ? "none" : "block") : "none";
+      }
+    </script>
+  </body>
 </html>
